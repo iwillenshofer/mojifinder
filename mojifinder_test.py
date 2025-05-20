@@ -6,7 +6,7 @@ from mojifinder import app
 client = TestClient(app)
 
 
-def test_root_endpoint():
+def test_root_endpoint() -> None:
     """Test the root endpoint returns the HTML form."""
     response = client.get("/")
 
@@ -21,7 +21,7 @@ def test_root_endpoint():
     assert content == app.state.form
 
 
-def test_search_endpoint():
+def test_search_endpoint() -> None:
     """Test the /search endpoint returns correct characters and names."""
     # Search for heart emoji characters
     response = client.get("/search?q=heart")
@@ -39,4 +39,24 @@ def test_search_endpoint():
         assert "HEART" in item["name"]
 
         # Verify the name matches what unicodedata would return
+        assert item["name"] == unicode_name(item["char"])
+
+
+def test_names_endpoint() -> None:
+    """Test the /names endpoint returns correct characters and names."""
+    # Search for heart letters characters
+    response = client.get("/names?q=ação")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Verify we got results
+    assert len(data) > 0
+
+    expected_letters = {letter for letter in "ação"}
+    # Check that returned data has the expected structure
+    for item in data:
+        assert "char" in item
+        assert "name" in item
+        assert item["char"] in expected_letters
         assert item["name"] == unicode_name(item["char"])

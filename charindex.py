@@ -28,7 +28,7 @@ RE_WORD = re.compile(r"\w+")
 STOP_CODE = sys.maxunicode + 1
 
 
-type InvertedIndex = dict[str, set[str]]
+InvertedIndex = dict[str, set[str]]
 
 
 def tokenize(text: str) -> list[str]:

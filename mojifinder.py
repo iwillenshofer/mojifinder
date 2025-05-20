@@ -1,6 +1,6 @@
 from pathlib import Path
 from unicodedata import name
-
+from typing import Any, Generator
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -20,7 +20,7 @@ class CharName(BaseModel):
     name: str
 
 
-def init(app):
+def init(app: FastAPI) -> None:
     app.state.index = CharIndex()
     app.state.form = (STATIC_PATH / "form.html").read_text()
 
@@ -28,15 +28,20 @@ def init(app):
 init(app)
 
 
+@app.get("/names", response_model=list[CharName])
+async def names(q: str) -> list[dict[str, str]]:
+    return [{"char": c, "name": name(c, "<unknown>")} for c in q]
+    
+
 @app.get("/search", response_model=list[CharName])
-async def search(q: str):
+async def search(q: str) -> Generator[dict[str, str], None, None]:
     words = tokenize(q)
     chars = sorted(app.state.index.search(words))
     return ({"char": c, "name": name(c)} for c in chars)
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
-def form():
+def form() -> Any:
     return app.state.form
 
 

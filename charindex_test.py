@@ -20,7 +20,7 @@ from charindex import tokenize, CharIndex
         ),  # Underscore is treated as part of word
     ],
 )
-def test_tokenize(given, expected):
+def test_tokenize(given: str, expected: list[str]) -> None:
     """Test the tokenize function with various inputs."""
     result = tokenize(given)
     assert result == expected
@@ -38,7 +38,7 @@ def test_tokenize(given, expected):
         ("empty query", [], []),
     ],
 )
-def test_search(label, given, expected):
+def test_search(label: str, given: list[str], expected: list[str]) -> None:
     ascii64 = CharIndex(0, 64)
     result = ascii64.search(given)
     assert result == expected, label
