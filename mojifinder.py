@@ -28,11 +28,6 @@ def init(app: FastAPI) -> None:
 init(app)
 
 
-@app.get("/names", response_model=list[CharName])
-async def names(q: str) -> list[dict[str, str]]:
-    return [{"char": c, "name": name(c, "<unknown>")} for c in q]
-    
-
 @app.get("/search", response_model=list[CharName])
 async def search(q: str) -> Generator[dict[str, str], None, None]:
     words = tokenize(q)

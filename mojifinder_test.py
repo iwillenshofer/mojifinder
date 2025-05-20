@@ -40,23 +40,3 @@ def test_search_endpoint() -> None:
 
         # Verify the name matches what unicodedata would return
         assert item["name"] == unicode_name(item["char"])
-
-
-def test_names_endpoint() -> None:
-    """Test the /names endpoint returns correct characters and names."""
-    # Search for heart letters characters
-    response = client.get("/names?q=ação")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    # Verify we got results
-    assert len(data) > 0
-
-    expected_letters = {letter for letter in "ação"}
-    # Check that returned data has the expected structure
-    for item in data:
-        assert "char" in item
-        assert "name" in item
-        assert item["char"] in expected_letters
-        assert item["name"] == unicode_name(item["char"])
